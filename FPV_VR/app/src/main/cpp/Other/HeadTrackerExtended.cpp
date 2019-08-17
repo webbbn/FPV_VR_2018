@@ -30,7 +30,8 @@ HeadTrackerExtended::HeadTrackerExtended(float interpupilarryDistance) {
 }
 
 void HeadTrackerExtended::calculateMatrices(float ratio) {
-    worldMatrices.projection=glm::perspective(glm::radians(45.0f), ratio, 0.1f, MAX_Z_DISTANCE+5.0f);
+  //worldMatrices.projection=glm::perspective(glm::radians(45.0f), ratio, 0.1f, MAX_Z_DISTANCE+5.0f);
+    worldMatrices.projection=glm::perspective(glm::radians(75.0f), ratio, 0.1f, MAX_Z_DISTANCE+5.0f);
     worldMatrices.leftEyeView=glm::lookAt(
             glm::vec3(0,0,0),
             glm::vec3(0,0,-MAX_Z_DISTANCE),
@@ -41,18 +42,18 @@ void HeadTrackerExtended::calculateMatrices(float ratio) {
             glm::vec3(0,0,-MAX_Z_DISTANCE),
             glm::vec3(0,1,0)
     );
-    glm::translate(worldMatrices.leftEyeView,glm::vec3(-IPD/2.0f,0,0));
-    glm::translate(worldMatrices.rightEyeView,glm::vec3(IPD/2.0f,0,0));
-    /*worldMatrices.leftEyeView=glm::lookAt(
+    worldMatrices.monoView=glm::lookAt(
             glm::vec3(0,0,0),
-            glm::vec3(-S_InterpupilaryDistance/2.0f,0,-MAX_Z_DISTANCE),
+            glm::vec3(0,0,-MAX_Z_DISTANCE),
             glm::vec3(0,1,0)
     );
-    worldMatrices.rightEyeView=glm::lookAt(
+    glm::translate(worldMatrices.leftEyeView,glm::vec3(-IPD/2.0f,0,0));
+    glm::translate(worldMatrices.rightEyeView,glm::vec3(IPD/2.0f,0,0));
+    worldMatrices.monoView=glm::lookAt(
             glm::vec3(0,0,0),
-            glm::vec3(S_InterpupilaryDistance/2.0f,0,-MAX_Z_DISTANCE),
+            glm::vec3(0,0,-MAX_Z_DISTANCE),
             glm::vec3(0,1,0)
-    );*/
+    );
 }
 
 void HeadTrackerExtended::calculateNewHeadPose(gvr::GvrApi *gvr_api, const int predictMS) {
@@ -91,6 +92,7 @@ void HeadTrackerExtended::calculateNewHeadPose(gvr::GvrApi *gvr_api, const int p
     }
     worldMatrices.leftEyeViewTracked=glm::translate(headView,glm::vec3(-IPD/2.0f,0,0));
     worldMatrices.rightEyeViewTracked=glm::translate(headView,glm::vec3(IPD/2.0f,0,0));
+    worldMatrices.monoViewTracked=glm::translate(headView,glm::vec3(0,0,0.0));
 }
 
 WorldMatrices* HeadTrackerExtended::getWorldMatrices() {

@@ -6,27 +6,28 @@
 #define TAG "VideoRenderer"
 #define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, TAG, __VA_ARGS__)
 
-VideoRenderer::VideoRenderer(GLRenderColor *glRenderColor,GLRenderTextureExternal *glRenderTexEx,bool eTesselation) {
+VideoRenderer::VideoRenderer(GLRenderColor *glRenderColor,GLRenderTextureExternal *glRenderTexEx,bool eTesselation,GLRenderSpherical *glRenderSpherical) {
 #ifdef DEBUG_POSITION
     glGenBuffers(1,mGLDebugB);
 #endif
     mGLRenderColor=glRenderColor;
     mGLRenderTexEx=glRenderTexEx;
+    mGLRenderSpherical=glRenderSpherical;
     enableTesselation=eTesselation;
-    glGenBuffers(1,mGLBuffer);
 }
 
 void VideoRenderer::setWorldPosition(float videoX, float videoY, float videoZ, float videoW,float videoH) {
 #ifdef DEBUG_POSITION
     float debug[7*6];
-    makeColoredRect(debug,0,glm::vec3(videoX,videoY,videoZ),glm::vec3(videoW,0,0),glm::vec3(0,videoH,0),0,1,1,1);
+    makeColoredRect(debug,0,glm::vec3(videoX,videoY,videoZ),glm::vec3(videoW/2,0,0),glm::vec3(0,videoH/2,0),0,1,1,1);
     glBindBuffer(GL_ARRAY_BUFFER, mGLDebugB[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(debug),
                  debug, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 #endif
-    if(enableTesselation){
+    if(!mGLRenderSpherical && enableTesselation){
         float tmp[5*6*TesselationFactor*TesselationFactor];
+	glGenBuffers(1,mGLBuffer);
         makeTesselatedVideoCanvas(tmp,0,glm::vec3(videoX,videoY,videoZ),videoW,videoH,TesselationFactor);
         glBindBuffer(GL_ARRAY_BUFFER, mGLBuffer[0]);
         glBufferData(GL_ARRAY_BUFFER, sizeof(tmp),
@@ -35,6 +36,7 @@ void VideoRenderer::setWorldPosition(float videoX, float videoY, float videoZ, f
         nVertices=2*3*TesselationFactor*TesselationFactor;
     }else{
         float tmp[5*6];
+	glGenBuffers(1,mGLBuffer);
         makeVideoCanvas(tmp,0,glm::vec3(videoX,videoY,videoZ),videoW,videoH);
         glBindBuffer(GL_ARRAY_BUFFER, mGLBuffer[0]);
         glBufferData(GL_ARRAY_BUFFER, sizeof(tmp),
@@ -50,10 +52,15 @@ void VideoRenderer::drawGL(glm::mat4x4 ViewM, glm::mat4x4 ProjM) {
     mGLRenderColor->draw(ViewM,ProjM,0,2*3);
     mGLRenderColor->afterDraw();
 #endif
-    mGLRenderTexEx->beforeDraw(mGLBuffer[0]);
-    mGLRenderTexEx->draw(ViewM,ProjM,0,nVertices);
-    mGLRenderTexEx->afterDraw();
-    checkGlError("VideoRenderer::drawGL");
+    if (mGLRenderTexEx) {
+        mGLRenderTexEx->beforeDraw(mGLBuffer[0]);
+        mGLRenderTexEx->draw(ViewM,ProjM,0,nVertices);
+        mGLRenderTexEx->afterDraw();
+	checkGlError("VideoRenderer::drawGL");
+    } else if(mGLRenderSpherical) {
+        mGLRenderSpherical->draw(ViewM,ProjM);
+	checkGlError("VideoRenderer::drawGL");
+    }
 }
 
 void VideoRenderer::initUpdateTexImageJAVA(JNIEnv *env, jobject obj,jobject surfaceTexture) {

@@ -36,7 +36,8 @@ public class Activity_MonoVid extends AppCompatActivity implements SurfaceHolder
         mSurfaceView = findViewById(R.id.videoOnly_Surface);
         mSurfaceView.getHolder().addCallback(this);
         mAspectFrameLayout =  findViewById(R.id.videoOnly_AFL);
-        mAspectFrameLayout.setAspectRatio(1280.0 / 720.0);
+        //mAspectFrameLayout.setAspectRatio(1280.0 / 720.0);
+        mAspectFrameLayout.setAspectRatio(2160.0 / 1280.0);
     }
 
     @Override

@@ -143,8 +143,8 @@ void LowLagDecoder::configureStartDecoder(uint8_t nalu_data[NALU_MAXLEN],int nal
     }
     decoder.format=AMediaFormat_new();
     AMediaFormat_setString(decoder.format,AMEDIAFORMAT_KEY_MIME,"video/avc");
-    AMediaFormat_setInt32(decoder.format,AMEDIAFORMAT_KEY_WIDTH,1280);
-    AMediaFormat_setInt32(decoder.format,AMEDIAFORMAT_KEY_HEIGHT,720);
+    AMediaFormat_setInt32(decoder.format,AMEDIAFORMAT_KEY_WIDTH,2560);
+    AMediaFormat_setInt32(decoder.format,AMEDIAFORMAT_KEY_HEIGHT,1280);
 
     AMediaFormat_setBuffer(decoder.format,"csd-0",&CSDO,(size_t)CSD0Length);
     AMediaFormat_setBuffer(decoder.format,"csd-1",&CSD1,(size_t)CSD1Length);
@@ -361,7 +361,7 @@ JNI_METHOD(void, nativeOnResume)
     LOGV("OnResume()");
     native(glRendererMono)->OnResume();
 }
-/*JNI_METHOD(void, nativeOnSurfaceDestroyed)
+JNI_METHOD(void, nativeOnSurfaceDestroyed)
 (JNIEnv *env, jobject obj, jlong glRendererMono) {
     LOGV("OnResume()");
     native(glRendererMono)->OnSurfaceDestroyed();

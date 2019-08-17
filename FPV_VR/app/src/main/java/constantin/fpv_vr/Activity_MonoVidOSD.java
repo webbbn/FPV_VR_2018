@@ -62,7 +62,8 @@ public class Activity_MonoVidOSD extends AppCompatActivity implements SurfaceHol
         mSurfaceView = findViewById(R.id.VideoSurfaceBelow);
         mSurfaceView.getHolder().addCallback(this);
         mAspectFrameLayout =  findViewById(R.id.VideoSurface_AFL);
-        mAspectFrameLayout.setAspectRatio((double)1280/720);
+        //mAspectFrameLayout.setAspectRatio((double)1280/720);
+        mAspectFrameLayout.setAspectRatio((double)2160/1280);
 
         mGLView = new GLSurfaceView(this);
         mGLView.setEGLContextClientVersion(2);

@@ -7,6 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GLRenderTextureExternal.h>
 #include <GLRenderGeometry.h>
+#include <GLRenderSpherical.h>
 
 //#define DEBUG_POSITION
 
@@ -16,7 +17,7 @@ class VideoRenderer {
     GLuint mGLDebugB[1];
 #endif
 public:
-    VideoRenderer(GLRenderColor *glRenderColor,GLRenderTextureExternal *glRenderTexEx,bool eTesselation);
+    VideoRenderer(GLRenderColor *glRenderColor,GLRenderTextureExternal *glRenderTexEx,bool eTesselation,GLRenderSpherical *glRenderSpherical=NULL);
     void setWorldPosition(float videoX,float videoY,float videoZ,float videoW,float videoH);
     void drawGL(glm::mat4x4 ViewM, glm::mat4x4 ProjM);
     void initUpdateTexImageJAVA(JNIEnv * env,jobject obj,jobject surfaceTexture);
@@ -27,6 +28,7 @@ private:
     GLuint mGLBuffer[1];
     GLRenderColor* mGLRenderColor;
     GLRenderTextureExternal* mGLRenderTexEx;
+    GLRenderSpherical* mGLRenderSpherical;
     bool enableTesselation;
     int nVertices;
     int TesselationFactor=20;

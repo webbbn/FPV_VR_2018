@@ -1,5 +1,6 @@
 
 #include "GLTextObj.h"
+#include <pthread.h>
 
 GLTextObj::GLTextObj(std::string text, float x, float y, float z, float textH, float r, float g,
                      float b) {

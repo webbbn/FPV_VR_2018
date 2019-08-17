@@ -124,10 +124,25 @@ target_link_libraries( GLRenderTextureExternal
                        android
                        log
                        GLESv2)
+add_library( GLRenderSpherical
+             SHARED
+             src/main/cpp/GLPrograms/GLRenderSpherical.cpp )
+target_link_libraries( GLRenderSpherical
+		       GLRenderSphere
+                       ${log-lib}
+                       android
+                       log
+                       GLESv2)
 add_library( GLTextObj
              SHARED
              src/main/cpp/GLPrograms/GLTextObj.cpp )
 target_link_libraries( GLTextObj
+                       ${log-lib}
+                       log)
+add_library( GLRenderSphere
+             SHARED
+             src/main/cpp/GLPrograms/GLRenderSphere.cpp )
+target_link_libraries( GLRenderSphere
                        ${log-lib}
                        log)
 ##########################################################################################################
@@ -263,6 +278,7 @@ add_library( VideoRenderer
 target_link_libraries(VideoRenderer
                       GLRenderGeometry
                       GLRenderTextureExternal
+                      GLRenderSpherical
                        ${log-lib}
                        android
                        log
@@ -303,6 +319,29 @@ target_link_libraries( GLRendererMono
                        FPSCalculator
                        )
 
+add_library( GLRendererMono360
+             SHARED
+             src/main/cpp/GLRenderer/GLRendererMono360.cpp )
+target_link_libraries( GLRendererMono360
+                       GLRenderGeometry
+                       GLRenderLine
+                       GLRenderText
+                       GLRenderTexture
+                       GLRenderSpherical
+                       OSDRenderer
+                       VideoRenderer
+                       TelemetryReceiver
+                       Chronometer
+                       SettingsN
+                       ${log-lib}
+                       android
+                       log
+                       EGL
+                       GLESv2
+                       #gvr-lib
+                       HeadTrackerExtended
+                       FPSCalculator)
+
 add_library( GLRendererStereo
              SHARED
              src/main/cpp/GLRenderer/GLRendererStereo.cpp )
@@ -310,7 +349,6 @@ target_link_libraries( GLRendererStereo
                        GLRenderGeometry
                        GLRenderLine
                        GLRenderText
-                       GLRenderTexture
                        GLRenderTextureExternal
                        OSDRenderer
                        VideoRenderer

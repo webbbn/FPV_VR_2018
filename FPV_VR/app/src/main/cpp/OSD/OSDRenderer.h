@@ -22,6 +22,7 @@ class OSDRenderer {
 public:
     OSDRenderer(TelemetryReceiver* telemetryReceiver,const GLRenderColor* glRenderColor,const GLRenderLine* glRenderLine,const GLRenderText* glRenderText);
     void placeGLElementsMono(float videoX,float videoY,float videoZ,float videoW,float videoH,int strokeW);
+    void placeGLElementsMono360(float videoX,float videoY,float videoZ,float videoW,float videoH,int strokeW);
     void placeGLElementsStereo(float videoX,float videoY,float videoZ,float videoW,float videoH,int strokeW);
     //
     void updateAndDrawElements(glm::mat4x4 ViewM,glm::mat4x4 ViewM2,glm::mat4x4 ProjM,bool create3PPerspective);

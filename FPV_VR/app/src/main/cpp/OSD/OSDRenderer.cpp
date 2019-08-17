@@ -38,7 +38,7 @@ void OSDRenderer::placeGLElementsMono(float videoX,float videoY,float videoZ,flo
         float height1=width1*mCompasLadder->RATIO;
         float x1=videoX+(videoW-width1)*0.5f;
         float y1=videoY+videoH-textHeight*3.0f-height1;
-        mCompasLadder->setWorldPosition(x1,y1,videoZ,width1,height1,0.01f);
+        mCompasLadder->setWorldPosition(x1,y1,videoZ,width1,height1,1);
     }
     if(mHeightLadder!=NULL){
         float height2=videoH/2.0f;
@@ -51,6 +51,34 @@ void OSDRenderer::placeGLElementsMono(float videoX,float videoY,float videoZ,flo
         mModelRollPitch->setWorldPosition(0,0,videoZ,2);
     }
     checkGlError("OSDRenderer::placeGLElementsMono");
+}
+void OSDRenderer::placeGLElementsMono360(float videoX,float videoY,float videoZ,float videoW,float videoH,int strokeW) {
+    float textHeight=videoW*0.05f;
+    if(mTextElements!=NULL){
+        if(S_OSD_OverlaysVideo) {
+            mTextElements->setWorldPosition(videoX, videoY, videoZ, videoW, videoH,textHeight);
+        }else{
+            mTextElements->setWorldPosition(videoX, videoY-textHeight*3.0f, videoZ, videoW, videoH+textHeight*6,textHeight);
+        }
+    }
+    if(mCompasLadder!=NULL){
+        float width=videoW/3.0f;
+        float height=width*mCompasLadder->RATIO;
+        float x=videoX+videoW/3.0f;
+        float y=videoY+videoH-(videoW/3.0f*mCompasLadder->RATIO);
+        mCompasLadder->setWorldPosition(x,y,videoZ,width,height,1);
+    }
+    if(mHeightLadder!=NULL){
+        float height=videoH/2.0f;
+        float width=height/mHeightLadder->RATIO;
+        float x=videoX;
+        float y=videoY+(videoH-height)/2.0f;
+        mHeightLadder->setWorldPosition(x,y,videoZ,width,height,2);
+    }
+    if(mModelRollPitch!=NULL){
+        mModelRollPitch->setWorldPosition(0,0,videoZ,2);
+    }
+    checkGlError("OSDRenderer::placeGLElementsStereo");
 }
 void OSDRenderer::placeGLElementsStereo(float videoX,float videoY,float videoZ,float videoW,float videoH,int strokeW) {
     float textHeight=videoW*0.05f;
@@ -66,7 +94,7 @@ void OSDRenderer::placeGLElementsStereo(float videoX,float videoY,float videoZ,f
         float height=width*mCompasLadder->RATIO;
         float x=videoX+videoW/3.0f;
         float y=videoY+videoH-(videoW/3.0f*mCompasLadder->RATIO);
-        mCompasLadder->setWorldPosition(x,y,videoZ,width,height,0.015f);
+        mCompasLadder->setWorldPosition(x,y,videoZ,width,height,1);
     }
     if(mHeightLadder!=NULL){
         float height=videoH/2.0f;

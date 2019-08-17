@@ -38,7 +38,7 @@ void GLRSuperSync::OnSurfaceCreated(JNIEnv *env, jobject obj, jint videoTexture,
     mGLRenderText->loadTextureImage(env, obj,assetManagerJAVA);
     mGLRenderTextureExternal=std::make_shared<GLRenderTextureExternal>(S_DistortionCorrection,(GLuint)videoTexture);
     mOSDRenderer=std::make_shared<OSDRenderer>(mTelemetryReceiver.get(), mGLRenderColor.get(),mGLRenderLine.get(), mGLRenderText.get());
-    mVideoRenderer=std::make_shared<VideoRenderer>(mGLRenderColor.get(),mGLRenderTextureExternal.get(),S_DistortionCorrection);
+    mVideoRenderer=std::make_shared<VideoRenderer>(mGLRenderColor.get(),mGLRenderTextureExternal.get(),S_DistortionCorrection,(GLRenderSpherical*)NULL);
     std::vector<std::string> v = {"startDR","updateTexImage1","clear","drawGL","stopDR","updateTexImage2"};
     mFrameCPUChronometer=std::make_shared<FrameCPUChronometer>(v);
     initOtherExtensions();

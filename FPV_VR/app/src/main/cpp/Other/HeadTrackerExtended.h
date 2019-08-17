@@ -21,11 +21,13 @@ struct WorldMatrices{
     //depends on the IPD selected by the user and MAX_Z_DISTANCE
     glm::mat4x4 leftEyeView;
     glm::mat4x4 rightEyeView;
+    glm::mat4x4 monoView;
     //the view matrix multiplied by the head tracking rotation matrix.
     //Recalculated with each 'updateHeadPosition()' call
     //different for 1PP and 3PP modes
     glm::mat4x4 leftEyeViewTracked; //the left eye view M with head tracking applied
     glm::mat4x4 rightEyeViewTracked; //same for left eye
+    glm::mat4x4 monoViewTracked;
 };
 
 class HeadTrackerExtended {

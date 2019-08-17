@@ -384,3 +384,50 @@ static const string fs_textureExt(){
     s.append("}\n");
     return s;
 }
+
+static const string vs_textureExt_360(){
+    string s;
+    s.append("uniform mat4 uMVMatrix;\n");
+    s.append("uniform mat4 uPMatrix;\n");
+    s.append("attribute vec3 aPosition;\n");
+    s.append("attribute vec3 aNormal;\n");
+    s.append("attribute vec2 aTexCoord;\n");
+    s.append("varying vec2 vTexCoord;\n");
+    s.append("varying vec3 vNormal;\n");
+    s.append("void main() {\n");
+    s.append("  gl_Position = uPMatrix * uMVMatrix * vec4(aPosition, 1.0);\n");
+    s.append("  vTexCoord = aTexCoord;\n");
+    s.append("  vNormal = aNormal;");
+    s.append("}\n");
+    return s;
+}
+static const string fs_textureExt_360(){
+    string s;
+    s.append("#extension GL_OES_EGL_image_external : require\n");
+    s.append("precision mediump float;\n");
+    s.append("varying vec2 vTexCoord;\n");
+    s.append("varying vec3 vNormal;\n");
+    s.append("uniform samplerExternalOES sTextureExt;\n");
+    s.append("void main() {\n");
+    s.append("  float pi = 3.14159265359;\n");
+    s.append("  float pi_2 = 1.57079632679;\n");
+    s.append("  float xy;\n");
+    s.append("  if (vTexCoord.y < 0.5) {\n");
+    s.append("    xy = 2.0 * vTexCoord.y;\n");
+    s.append("  } else {\n");
+    s.append("    xy = 2.0 * (1.0 - vTexCoord.y);\n");
+    s.append("  }\n");
+    s.append("  float sectorAngle = 2.0 * pi * vTexCoord.x;\n");
+    s.append("  float nx = xy * cos(sectorAngle);\n");
+    s.append("  float ny = xy * sin(sectorAngle);\n");
+    s.append("  float scale = 0.93;\n");
+    s.append("  float t = -ny * scale / 2.0 + 0.5;\n");
+    s.append("  float s = nx * scale / 4.0 + 0.25;\n");
+    s.append("  if (vTexCoord.y > 0.5) {\n");
+    s.append("    s = 1.0 - s;\n");
+    s.append("  }\n");
+    s.append("  vec3 normal = normalize(vNormal);\n");
+    s.append("  gl_FragColor = texture2D(sTextureExt, vec2(s, t));\n");
+    s.append("}\n");
+    return s;
+}

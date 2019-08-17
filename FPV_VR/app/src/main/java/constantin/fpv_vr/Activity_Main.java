@@ -117,6 +117,12 @@ public class Activity_Main extends AppCompatActivity implements View.OnClickList
                     startActivity(mStereoI);
                 }
                 break;
+            case R.id.button4:
+                Intent mMono360I=new Intent();
+                mMono360I.setClass(this, Activity_Mono360.class);
+                Settings.waitUntilSharedPreferencesAreRead();
+                startActivity(mMono360I);
+                break;
             case R.id.button5:
                 Intent mSettingsI=new Intent();
                 mSettingsI.setClass(this, Activity_Settings.class);
