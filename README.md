@@ -7,7 +7,7 @@ See FPV_VR for the old source code, mostly written in JAVA.
 
 See "Changelog_4.0.pdf" in this branch for changes.
 
-# 2019/08/16 Brian Webb
+# 2019/08/16 - Initial 360 degree video support
 
 Added initial support for display of 360 degree video from the Insta360 Air USB video camera. Currently only mono display is supported, but the video is displayed on a GL surface, so adding stereo/VR display should be straight forward.
 
