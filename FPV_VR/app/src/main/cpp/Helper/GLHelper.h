@@ -422,7 +422,7 @@ static const string fs_textureExt_360(){
     s.append("  float ny = xy * sin(sectorAngle);\n");
     s.append("  float scale = 0.93;\n");
     s.append("  float t = -ny * scale / 2.0 + 0.5;\n");
-    s.append("  float s = nx * scale / 4.0 + 0.25;\n");
+    s.append("  float s = -nx * scale / 4.0 + 0.25;\n");
     s.append("  if (vTexCoord.y > 0.5) {\n");
     s.append("    s = 1.0 - s;\n");
     s.append("  }\n");
