@@ -282,6 +282,12 @@
                     android:inputType="numberDecimal"
                     android:defaultValue="50"
                     android:summary="Size of your VR Scene in % (replaced sceneDistance). Default:50, select values between 0 and 100"/>
+                <EditTextPreference
+                    android:key="@string/FieldOfView"
+                    android:title="@string/FieldOfView"
+                    android:inputType="numberDecimal"
+                    android:defaultValue="75"
+                    android:summary="The horizontal field of view in degrees of the 360 video viewport. Default:75, select values between 0 and 180"/>
             </PreferenceCategory>
             <PreferenceCategory
                 android:title="DistortionCorrection">

@@ -52,31 +52,30 @@ void OSDRenderer::placeGLElementsMono(float videoX,float videoY,float videoZ,flo
     }
     checkGlError("OSDRenderer::placeGLElementsMono");
 }
-void OSDRenderer::placeGLElementsMono360(float videoX,float videoY,float videoZ,float videoW,float videoH,int strokeW) {
-    float textHeight=videoW*0.05f;
+void OSDRenderer::placeGLElementsMono360(int windowW, int windowH, int strokeW) {
+    float xo = -windowW/2;
+    float yo = -windowH/2;
+    float textHeight=windowH*0.05f;
+    float osdZ = -10;
     if(mTextElements!=NULL){
-        if(S_OSD_OverlaysVideo) {
-            mTextElements->setWorldPosition(videoX, videoY, videoZ, videoW, videoH,textHeight);
-        }else{
-            mTextElements->setWorldPosition(videoX, videoY-textHeight*3.0f, videoZ, videoW, videoH+textHeight*6,textHeight);
-        }
+        mTextElements->setWorldPosition(xo, yo, osdZ, windowW, windowH, textHeight);
     }
     if(mCompasLadder!=NULL){
-        float width=videoW/3.0f;
-        float height=width*mCompasLadder->RATIO;
-        float x=videoX+videoW/3.0f;
-        float y=videoY+videoH-(videoW/3.0f*mCompasLadder->RATIO);
-        mCompasLadder->setWorldPosition(x,y,videoZ,width,height,1);
+        float width1=windowW/4.0f;
+        float height1=width1*mCompasLadder->RATIO;
+        float x1=xo+(windowW-width1)*0.5f;
+        float y1=yo+windowH-textHeight*3.0f-height1;
+        mCompasLadder->setWorldPosition(x1,y1,osdZ,width1,height1,1);
     }
     if(mHeightLadder!=NULL){
-        float height=videoH/2.0f;
+        float height=windowH/2.0f;
         float width=height/mHeightLadder->RATIO;
-        float x=videoX;
-        float y=videoY+(videoH-height)/2.0f;
-        mHeightLadder->setWorldPosition(x,y,videoZ,width,height,2);
+        float x=windowW/2-width;
+        float y=yo+height/2.0f;
+        mHeightLadder->setWorldPosition(x,y,osdZ,width,height,2);
     }
     if(mModelRollPitch!=NULL){
-        mModelRollPitch->setWorldPosition(0,0,videoZ,2);
+        mModelRollPitch->setWorldPosition(0,0,osdZ,2);
     }
     checkGlError("OSDRenderer::placeGLElementsStereo");
 }

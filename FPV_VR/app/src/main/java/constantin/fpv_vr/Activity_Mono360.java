@@ -87,6 +87,7 @@ public class Activity_Mono360 extends AppCompatActivity {
         } else if (Settings.Disable60fpsCap) {
             mode = GLSurfaceViewEGL14.MODE_UNLIMITED_FPS_BUT_VSYNC_ON;
         }
+/*
         if (useGVRLayout) {
             mGvrLayout = new GvrLayout(this);
             mGvrLayout.setAsyncReprojectionEnabled(false);
@@ -99,6 +100,7 @@ public class Activity_Mono360 extends AppCompatActivity {
             mGvrLayout.getUiLayout().setSettingsButtonEnabled(false);
             setContentView(mGvrLayout);
         } else {
+*/
             mGvrApi = new GvrApi(this, new DisplaySynchronizer(this, getWindowManager().getDefaultDisplay()));
             mGvrApi.reconnectSensors();
             mGvrApi.usingVrDisplayService();
@@ -109,7 +111,7 @@ public class Activity_Mono360 extends AppCompatActivity {
             mGLView14Mono360.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
             mGLView14Mono360.setPreserveEGLContextOnPause(false);
             setContentView(mGLView14Mono360);
-        }
+//        }
         mHomeLocation=new HomeLocation(this,mGLRenderer14Mono360);
     }
 

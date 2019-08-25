@@ -7,7 +7,7 @@
 #include "../Helper/CPUPriorities.h"
 
 //#define RELEASE  //Disables all debugging logs
-#define BUFFER_TIMEOUT 20*1000 //20ms (a littlebit more than 16.6ms)
+#define BUFFER_TIMEOUT 40*1000 //40ms (a littlebit more than 33.3ms)
 #define TIME_BETWEEN_LOGS 10*1000 //10s
 
 

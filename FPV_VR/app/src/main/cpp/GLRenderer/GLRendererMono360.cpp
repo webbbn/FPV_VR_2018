@@ -40,8 +40,13 @@
 
 GLRendererMono360::GLRendererMono360(gvr_context *gvr_context) {
     gvr_api_=gvr::GvrApi::WrapNonOwned(gvr_context);
-    mTelemetryReceiver=std::make_shared<TelemetryReceiver>(S_OSD_ParseLTM,S_LTMPort,S_OSD_ParseFRSKY,S_FRSKYPort,S_OSD_ParseMAVLINK,
-                                                           S_MAVLINKPort,S_OSD_ParseRSSI,S_RSSIPort);
+    mTelemetryReceiver=std::make_shared<TelemetryReceiver>(S_OSD_ParseLTM,
+							   S_LTMPort,S_OSD_ParseFRSKY,
+							   S_FRSKYPort,
+							   S_OSD_ParseMAVLINK,
+                                                           S_MAVLINKPort,
+							   S_OSD_ParseRSSI,
+							   S_RSSIPort);
     mHeadTrackerExtended=make_shared<HeadTrackerExtended>(S_InterpupilaryDistance);
 }
 
@@ -49,33 +54,19 @@ GLRendererMono360::~GLRendererMono360() {
 }
 
 void GLRendererMono360::placeGLElements(){
-    //LOGV("Place GL Elements");
     int strokeW=2;
-    float videoW=5;
-    float videoH=videoW*1.0f/videoFormat;
-    float videoX=-videoW/2.0f;
-    float videoY=-videoH/2.0f;
-    float videoZ=-HeadTrackerExtended::MAX_Z_DISTANCE*((100-S_SceneScale)/100.0f);
-    mOSDRenderer->placeGLElementsMono360(videoX,videoY,videoZ,videoW,videoH,strokeW);
-    mVideoRenderer->setWorldPosition(videoX,videoY,videoZ,videoW,videoH);
+    float scale = 1.0 / 130.0;
+    mOSDRenderer->placeGLElementsMono360(WindowW*scale,WindowH*scale,strokeW);
+    mVideoRenderer->setWorldPosition(-WindowW*scale,-WindowH*scale,1,WindowW*scale,WindowH*scale);
 }
 
 void GLRendererMono360::drawScene() {
-    if(mHeadTrackerExtended->mGroundTrackingMode!=HeadTrackerExtended::MODE_NONE){
-        mHeadTrackerExtended->calculateNewHeadPose(gvr_api_.get(),16);
-    }
+    mHeadTrackerExtended->calculateNewHeadPose360(gvr_api_.get(),16);
     WorldMatrices* worldMatrices=mHeadTrackerExtended->getWorldMatrices();
     //update and draw the scene
-    if(mHeadTrackerExtended->mGroundTrackingMode==HeadTrackerExtended::MODE_1PP){
-        glViewport(0, 0, ViewPortW, ViewPortH);
-        mVideoRenderer->drawGL(worldMatrices->monoViewTracked,worldMatrices->projection);
-        mOSDRenderer->updateAndDrawElements(worldMatrices->monoView,worldMatrices->monoView,worldMatrices->projection, false);
-    }else{
-        bool t=mHeadTrackerExtended->mGroundTrackingMode==HeadTrackerExtended::MODE_3PP_ARTIFICIALHORIZON_ONLY;
-        glViewport(0,0,ViewPortW,ViewPortH);
-        mVideoRenderer->drawGL(worldMatrices->monoView,worldMatrices->projection);
-        mOSDRenderer->updateAndDrawElements(worldMatrices->monoView,worldMatrices->monoViewTracked,worldMatrices->projection,t);
-    }
+    glViewport(0, 0, ViewPortW, ViewPortH);
+    mVideoRenderer->drawGL(worldMatrices->monoViewTracked,worldMatrices->projection360);
+    mOSDRenderer->updateAndDrawElements(worldMatrices->monoView,worldMatrices->monoView,worldMatrices->projectionOSD, false);
 }
 
 void GLRendererMono360::calculateMetrics(){

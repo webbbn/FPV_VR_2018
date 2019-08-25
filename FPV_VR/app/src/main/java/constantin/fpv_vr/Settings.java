@@ -35,7 +35,7 @@ public class Settings {
     public static final int ConnectionTypeTestFile =2;
     public static final int ConnectionTypeStorageFile=3;
     public static int ConnectionType = ConnectionTypeTestFile;
-    public static int UDPPortVideo=5000;
+    public static int UDPPortVideo=5600;
     public static String FilenameVideo="video.h264";
 
     //Performance "Hacks"
@@ -99,8 +99,8 @@ public class Settings {
         SharedPreferences pref_connect=context.getSharedPreferences("pref_connect", MODE_PRIVATE);
         ConnectionType = Integer.parseInt(pref_connect.getString(context.getString(R.string.ConnectionType),""+ ConnectionTypeTestFile));
         try{
-            UDPPortVideo=Integer.parseInt(pref_connect.getString(context.getString(R.string.UDPVideoPort),"5000"));
-        }catch (Exception e){e.printStackTrace();UDPPortVideo=5000;}
+            UDPPortVideo=Integer.parseInt(pref_connect.getString(context.getString(R.string.UDPVideoPort),"5600"));
+        }catch (Exception e){e.printStackTrace();UDPPortVideo=5600;}
         FilenameVideo=pref_connect.getString(context.getString(R.string.GroundRecFileName),"video.h264");
 
         //DistortionCorrection
@@ -166,6 +166,7 @@ public class Settings {
         updateBoolN(pref_default,context.getString(R.string.DistortionCorrection),true);
         updateFloatN(pref_default,context.getString(R.string.InterpupilaryDistance),0.2f);
         updateFloatN(pref_default,context.getString(R.string.SceneScale),50.0f);
+        updateFloatN(pref_default,context.getString(R.string.FieldOfView),75.0f);
         //OSD Values
         updateBoolN(pref_default,context.getString(R.string.TextElements),true);
         updateBoolN(pref_default,context.getString(R.string.CompassLadder),true);

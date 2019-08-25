@@ -17,6 +17,10 @@
 struct WorldMatrices{
     //the projection matrix. Same for left and right eye. Should be re calculated in each onSurfaceChanged via 'calculateMatrices()'
     glm::mat4x4 projection;
+    //the projection matrix for the 360 view. Same for left and right eye. Should be re calculated in each onSurfaceChanged via 'calculateMatrices()'
+    glm::mat4x4 projection360;
+    //the projection matrix for the OSD.
+    glm::mat4x4 projectionOSD;
     //simple view matrix, without head tracking. Also recalculated in onSurfaceHanged via 'calculateMatrices()'
     //depends on the IPD selected by the user and MAX_Z_DISTANCE
     glm::mat4x4 leftEyeView;
@@ -40,6 +44,7 @@ public:
 
     void calculateMatrices(float ratio);
     void calculateNewHeadPose(gvr::GvrApi* gvr_api,const int predictMS);
+    void calculateNewHeadPose360(gvr::GvrApi* gvr_api,const int predictMS);
     WorldMatrices* getWorldMatrices();
     int mGroundTrackingMode;
     bool groundX,groundY,groundZ;

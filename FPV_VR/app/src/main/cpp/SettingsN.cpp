@@ -9,6 +9,7 @@
 //Stereo and VR Rendering
 float S_InterpupilaryDistance;
 float S_SceneScale;
+float S_FieldOfView;
 bool S_DistortionCorrection;
 float S_UndistortionData[7];
 
@@ -163,6 +164,8 @@ JNIEXPORT void JNICALL Java_constantin_fpv_1vr_Settings_setFloatByStringID(
         S_InterpupilaryDistance=val;
     }else if("SceneScale"==s){
         S_SceneScale=val;
+    }else if("FieldOfView"==s){
+        S_FieldOfView=val;
     }else{
         LOGV("Native Float Value not specified: %s",s.c_str());
     }

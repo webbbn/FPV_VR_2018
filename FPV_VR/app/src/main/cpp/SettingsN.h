@@ -10,6 +10,7 @@
 //Stereo and VR Rendering
 extern float S_InterpupilaryDistance;
 extern float S_SceneScale;
+extern float S_FieldOfView;
 extern bool S_DistortionCorrection;
 extern float S_UndistortionData[7];
 

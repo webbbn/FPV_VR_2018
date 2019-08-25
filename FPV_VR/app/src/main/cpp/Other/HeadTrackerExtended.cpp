@@ -30,8 +30,9 @@ HeadTrackerExtended::HeadTrackerExtended(float interpupilarryDistance) {
 }
 
 void HeadTrackerExtended::calculateMatrices(float ratio) {
-  //worldMatrices.projection=glm::perspective(glm::radians(45.0f), ratio, 0.1f, MAX_Z_DISTANCE+5.0f);
-    worldMatrices.projection=glm::perspective(glm::radians(75.0f), ratio, 0.1f, MAX_Z_DISTANCE+5.0f);
+    worldMatrices.projection=glm::perspective(glm::radians(45.0f), ratio, 0.1f, MAX_Z_DISTANCE+5.0f);
+    worldMatrices.projection360=glm::perspective(glm::radians(S_FieldOfView), ratio, 0.1f, MAX_Z_DISTANCE+5.0f);
+    worldMatrices.projectionOSD=glm::perspective(glm::radians(45.0f), ratio, 0.1f, MAX_Z_DISTANCE+5.0f);
     worldMatrices.leftEyeView=glm::lookAt(
             glm::vec3(0,0,0),
             glm::vec3(0,0,-MAX_Z_DISTANCE),
@@ -49,11 +50,6 @@ void HeadTrackerExtended::calculateMatrices(float ratio) {
     );
     glm::translate(worldMatrices.leftEyeView,glm::vec3(-IPD/2.0f,0,0));
     glm::translate(worldMatrices.rightEyeView,glm::vec3(IPD/2.0f,0,0));
-    worldMatrices.monoView=glm::lookAt(
-            glm::vec3(0,0,0),
-            glm::vec3(0,0,-MAX_Z_DISTANCE),
-            glm::vec3(0,1,0)
-    );
 }
 
 void HeadTrackerExtended::calculateNewHeadPose(gvr::GvrApi *gvr_api, const int predictMS) {
@@ -90,6 +86,19 @@ void HeadTrackerExtended::calculateNewHeadPose(gvr::GvrApi *gvr_api, const int p
         glm::mat4x4 RotationMatrix = glm::toMat4(quat);
         headView=headView*RotationMatrix;
     }
+    worldMatrices.leftEyeViewTracked=glm::translate(headView,glm::vec3(-IPD/2.0f,0,0));
+    worldMatrices.rightEyeViewTracked=glm::translate(headView,glm::vec3(IPD/2.0f,0,0));
+    worldMatrices.monoViewTracked=glm::translate(headView,glm::vec3(0,0,0.0));
+}
+
+void HeadTrackerExtended::calculateNewHeadPose360(gvr::GvrApi *gvr_api, const int predictMS) {
+    gvr::ClockTimePoint target_time = gvr::GvrApi::GetTimePointNow();
+    target_time.monotonic_system_time_nanos+=predictMS*1000*1000;
+    gvr::Mat4f tmpM;
+    tmpM=gvr_api->GetHeadSpaceFromStartSpaceRotation(target_time);
+    gvr_api->ApplyNeckModel(tmpM,1);
+    glm::mat4x4 headView=glm::make_mat4(reinterpret_cast<const float*>(&tmpM.m));
+    headView=glm::transpose(headView);
     worldMatrices.leftEyeViewTracked=glm::translate(headView,glm::vec3(-IPD/2.0f,0,0));
     worldMatrices.rightEyeViewTracked=glm::translate(headView,glm::vec3(IPD/2.0f,0,0));
     worldMatrices.monoViewTracked=glm::translate(headView,glm::vec3(0,0,0.0));

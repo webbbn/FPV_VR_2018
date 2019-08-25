@@ -40,6 +40,7 @@
     //VR or Stereo Settings
     <string name="InterpupilaryDistance">InterpupilaryDistance</string>
     <string name="SceneScale">SceneScale</string>
+    <string name="FieldOfView">FieldOfView</string>
     <string name="DistortionCorrection">DistortionCorrection</string>
     //OSD and Telemetry Settings
     <string name="HorizonModel">HorizonModel</string>
@@ -124,13 +125,13 @@
     <string name="Mode3">Mode 3: Connect to any Digital FPV setup (ADVANCED)</string>
 
     <string name="EZWBMode1Info">Connect your mobile phone to EZ-Wifibroadcast RX Pi via Wifi
-            \n1)On your RX PI (wifibroadcast-1 file): WIFI_HOTSPOT=Y; FORWARD_STREAM=raw; VIDEO_UDP_PORT=5000;
+            \n1)On your RX PI (wifibroadcast-1 file): WIFI_HOTSPOT=Y; FORWARD_STREAM=raw; VIDEO_UDP_PORT=5600;
             \n  Start RX and TX PIs
             \n2)On your Phone: Activate Wifi and connect to \"EZ-WifiBroadcast\" using \"wifibroadcast\" as passphrase
             \n3)If your RX Pi also has a display connected: Wait for \"Secondary Display Connected\" message to appear on
             your RX Pi Monitor</string>
     <string name="EZWBMode2Info">Connect your Mobile Phone to EZ-Wifibroadcast RX Pi via USB cable
-            \n1)On your RX PI (wifibroadcast-1 file): ETHERNET_HOTSPOT=Y; FORWARD_STREAM=raw; VIDEO_UDP_PORT=5000;
+            \n1)On your RX PI (wifibroadcast-1 file): ETHERNET_HOTSPOT=Y; FORWARD_STREAM=raw; VIDEO_UDP_PORT=5600;
             \n  Start RX and TX PIs
             \n2)Connect your Phone to the RX Pi via USB Cable
             \n3)On your Phone: Enable \"USB tethering\" (now the Phone acts as Hotspot via USB and the RPI automatically connects)
@@ -138,7 +139,7 @@
             your RX Pi Monitor</string>
     <string name="ManuallyInfo">Connect your Mobile Phone to any Digital FPV setup (ADVANCED)
             \n1)Create a Network connection between your digital receiver and your phone
-            \n2)On your receiver, forward raw h.264 video stream via UDP to Port 5000 and Telemetry to the equivalent Ports (5001,5001 usw)
+            \n2)On your receiver, forward raw h.264 video stream via UDP to Port 5600 and Telemetry to the equivalent Ports (5001,5001 usw)
     </string>
 
     <string name="A_MSAATester_Start">A_MSAATester_Start</string>
