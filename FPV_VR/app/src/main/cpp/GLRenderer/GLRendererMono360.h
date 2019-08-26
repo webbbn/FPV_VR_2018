@@ -90,6 +90,16 @@ public:
 
     void setWorldPosition(float videoX, float videoY, float videoZ, float videoW,float videoH);
 
+    /**
+     * Change the view orientation to the saved home orientation.
+     */
+    void SetHomeOrientation();
+
+    /**
+     * Change the home orientation to the current orientation.
+     */
+    void GoToHomeOrientation();
+
 private:
     std::unique_ptr<gvr::GvrApi> gvr_api_;
     std::shared_ptr<GLRenderColor> mGLRenderColor= nullptr;

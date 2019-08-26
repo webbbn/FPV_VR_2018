@@ -49,6 +49,8 @@ public class GLRenderer14_Mono360 implements GLSurfaceViewEGL14.IRendererEGL14,V
     //private static native void nativeOnPause(long glRendererMono360P);
     private static native void nativeOnGLSurfaceDestroyed(long glRendererMono360P);
     private static native void nativeSetHomeLocation(long glRendererMono360P,double latitude, double longitude,double attitude);
+    private static native void nativeSetHomeOrientation(long glRendererMono360P);
+    private static native void nativeGoToHomeOrientation(long glRendererMono360P);
 
     private final Context mContext;
     private SurfaceTexture mSurfaceTexture=null;
@@ -128,5 +130,13 @@ public class GLRenderer14_Mono360 implements GLSurfaceViewEGL14.IRendererEGL14,V
     @Override
     public void onHomeLocationChanged(Location location) {
         nativeSetHomeLocation(nativeGLRendererMono360,location.getLatitude(),location.getLongitude(),location.getAltitude());
+    }
+
+    public void setHomeOrientation() {
+        nativeSetHomeOrientation(nativeGLRendererMono360);
+    }
+
+    public void goToHomeOrientation() {
+        nativeGoToHomeOrientation(nativeGLRendererMono360);
     }
 }

@@ -167,6 +167,15 @@ void GLRendererMono360::setVideoDecoderFPS(float fps) {
 void GLRendererMono360::setHomeLocation(double latitude, double longitude,double attitude) {
     mTelemetryReceiver->setHome(latitude,longitude,attitude);
 }
+
+void GLRendererMono360::SetHomeOrientation() {
+    mHeadTrackerExtended->setHomeOrientation(gvr_api_.get());
+}
+
+void GLRendererMono360::GoToHomeOrientation() {
+    mHeadTrackerExtended->goToHomeOrientation(gvr_api_.get());
+}
+
 //----------------------------------------------------JAVA bindings---------------------------------------------------------------
 
 #define JNI_METHOD(return_type, method_name) \
@@ -233,5 +242,17 @@ JNI_METHOD(void, nativeSetHomeLocation)
 (JNIEnv *env, jobject obj, jlong glRendererMono360,jdouble latitude,jdouble longitude,jdouble attitude) {
     native(glRendererMono360)->setHomeLocation((double)latitude,(double)longitude,(double)attitude);
     LOGV("setHomeLocation()");
+}
+
+JNI_METHOD(void, nativeSetHomeOrientation)
+(JNIEnv *env, jobject obj, jlong glRendererMono360) {
+    LOGV("nativeSetHomeOrientation()");
+    native(glRendererMono360)->SetHomeOrientation();
+}
+
+JNI_METHOD(void, nativeGoToHomeOrientation)
+(JNIEnv *env, jobject obj, jlong glRendererMono360) {
+    LOGV("nativeGoToHomeOrientation()");
+    native(glRendererMono360)->GoToHomeOrientation();
 }
 }

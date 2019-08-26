@@ -32,6 +32,9 @@ struct WorldMatrices{
     glm::mat4x4 leftEyeViewTracked; //the left eye view M with head tracking applied
     glm::mat4x4 rightEyeViewTracked; //same for left eye
     glm::mat4x4 monoViewTracked;
+    // The view matrix the defines the forward orientation
+    // This should be added into the rotation matrix
+    glm::mat4x4 monoForward360;
 };
 
 class HeadTrackerExtended {
@@ -46,6 +49,8 @@ public:
     void calculateNewHeadPose(gvr::GvrApi* gvr_api,const int predictMS);
     void calculateNewHeadPose360(gvr::GvrApi* gvr_api,const int predictMS);
     WorldMatrices* getWorldMatrices();
+    void setHomeOrientation(gvr::GvrApi *gvr_api);
+    void goToHomeOrientation(gvr::GvrApi *gvr_api);
     int mGroundTrackingMode;
     bool groundX,groundY,groundZ;
     bool airYaw,airRoll,airPitch;

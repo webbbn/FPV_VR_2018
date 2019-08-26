@@ -16,6 +16,19 @@
 #define TAG "HeadTrackerExtended"
 #define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE, TAG, __VA_ARGS__)
 
+static gvr::Mat4f MatrixMul(const gvr::Mat4f& matrix1, const gvr::Mat4f& matrix2) {
+    gvr::Mat4f result;
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 4; ++j) {
+            result.m[i][j] = 0.0f;
+            for (int k = 0; k < 4; ++k) {
+                result.m[i][j] += matrix1.m[i][k] * matrix2.m[k][j];
+            }
+        }
+    }
+    return result;
+}
+
 HeadTrackerExtended::HeadTrackerExtended(float interpupilarryDistance) {
     IPD=interpupilarryDistance;
     this->mGroundTrackingMode=S_GHT_MODE;
@@ -91,16 +104,22 @@ void HeadTrackerExtended::calculateNewHeadPose(gvr::GvrApi *gvr_api, const int p
     worldMatrices.monoViewTracked=glm::translate(headView,glm::vec3(0,0,0.0));
 }
 
+gvr::Mat4f MatrixMul(const glm::mat4x4 &m1, const gvr::Mat4f &m2) {
+   glm::mat4x4 tm2=glm::make_mat4(reinterpret_cast<const float*>(&m2.m));
+    tm2 = m1 * tm2;
+    gvr::Mat4f ret;
+    memcpy(reinterpret_cast<float*>(&ret.m), reinterpret_cast<float*>(&tm2[0]), 16 * sizeof(float));
+    return ret;
+}
+
 void HeadTrackerExtended::calculateNewHeadPose360(gvr::GvrApi *gvr_api, const int predictMS) {
     gvr::ClockTimePoint target_time = gvr::GvrApi::GetTimePointNow();
     target_time.monotonic_system_time_nanos+=predictMS*1000*1000;
-    gvr::Mat4f tmpM;
-    tmpM=gvr_api->GetHeadSpaceFromStartSpaceRotation(target_time);
+    gvr::Mat4f tmpM = gvr_api->GetHeadSpaceFromStartSpaceTransform(target_time);
+    tmpM = MatrixMul(worldMatrices.monoForward360, tmpM);
     gvr_api->ApplyNeckModel(tmpM,1);
     glm::mat4x4 headView=glm::make_mat4(reinterpret_cast<const float*>(&tmpM.m));
     headView=glm::transpose(headView);
-    worldMatrices.leftEyeViewTracked=glm::translate(headView,glm::vec3(-IPD/2.0f,0,0));
-    worldMatrices.rightEyeViewTracked=glm::translate(headView,glm::vec3(IPD/2.0f,0,0));
     worldMatrices.monoViewTracked=glm::translate(headView,glm::vec3(0,0,0.0));
 }
 
@@ -108,49 +127,19 @@ WorldMatrices* HeadTrackerExtended::getWorldMatrices() {
     return &worldMatrices;
 }
 
-/*glm::mat4x4 HeadTrackerExtended::getHeadSpaceFromStartSpaceRotation(gvr::GvrApi* gvr_api,int predictMS) {
-    return glm::mat4x4();
+glm::mat4x4 startToHeadRotation(gvr::GvrApi *gvr_api) {
+    gvr::Mat4f mat = gvr_api->GetHeadSpaceFromStartSpaceTransform(gvr::GvrApi::GetTimePointNow());
+    glm::mat4x4 tmat=glm::make_mat4(reinterpret_cast<const float*>(&mat.m));
+    return glm::toMat4(glm::quat_cast(tmat));
 }
 
-HeadTrackerExtended::StereoViewM HeadTrackerExtended::getStereoViewMatrices(gvr::GvrApi* gvr_api,const int predictMS,const bool applyNeckModel) {
-    gvr::ClockTimePoint target_time = gvr::GvrApi::GetTimePointNow();
-    target_time.monotonic_system_time_nanos+=predictMS*1000*1000;
-    gvr::Mat4f tmpM;
-    StereoViewM stereoViewM;
+void HeadTrackerExtended::setHomeOrientation(gvr::GvrApi *gvr_api) {
+    // Get the current start->head transformation
+    worldMatrices.monoForward360=worldMatrices.monoForward360*startToHeadRotation(gvr_api);
+    // Reset yaw back to start
+    gvr_api->RecenterTracking();
+}
 
-    tmpM=gvr_api->GetHeadSpaceFromStartSpaceRotation(target_time);
-    if(applyNeckModel){
-        gvr_api->ApplyNeckModel(tmpM,1);
-    }
-
-    glm::mat4x4 headView=glm::make_mat4(reinterpret_cast<const float*>(&tmpM.m));
-    headView=glm::transpose(headView);
-    //glm::quat mQuat=glm::toQuat(headView);
-    //LOGV("");
-    //
-    tmpM=gvr_api->GetEyeFromHeadMatrix(gvr::Eye::GVR_LEFT_EYE);
-    glm::mat4x4 leftEyeFromHead=glm::make_mat4(reinterpret_cast<const float*>(&tmpM.m));
-    leftEyeFromHead=glm::transpose(leftEyeFromHead);
-    //
-    tmpM=gvr_api->GetEyeFromHeadMatrix(gvr::Eye::GVR_RIGHT_EYE);
-    glm::mat4x4 rightEyeFromHead=glm::make_mat4(reinterpret_cast<const float*>(&tmpM.m));
-    rightEyeFromHead=glm::transpose(rightEyeFromHead);
-
-    //stereoViewM.leftEyeViewM=headView*leftEyeFromHead;
-    //stereoViewM.rightEyeViewM=headView*rightEyeFromHead;
-    stereoViewM.leftEyeViewM=headView;
-    stereoViewM.rightEyeViewM=headView*rightEyeFromHead;
-    /*glm::mat4x4 mLeftEyeVM=glm::lookAt(
-            glm::vec3(-0.2f/2.0f,0,0),
-            glm::vec3(0,0,-14.0f),
-            glm::vec3(0,1,0)
-    );
-    stereoViewM.leftEyeViewM=headView*mLeftEyeVM;
-    stereoViewM.leftEyeViewM=headView;*/
-    /*return stereoViewM;
-}*/
-/*glm::quat quatRotation = glm::quat_cast(headView);
-    quatRotation=glm::inverse(quatRotation);
-    glm::mat4x4 RotationMatrix = glm::toMat4(quatRotation);
-    headView=headView*RotationMatrix;*/
-
+void HeadTrackerExtended::goToHomeOrientation(gvr::GvrApi *gvr_api) {
+    gvr_api->RecenterTracking();
+}

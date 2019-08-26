@@ -28,16 +28,15 @@ import android.os.PowerManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Surface;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
 import com.google.vr.cardboard.DisplaySynchronizer;
 import com.google.vr.ndk.base.GvrApi;
 import com.google.vr.ndk.base.GvrLayout;
-import com.google.vr.ndk.base.GvrUiLayout;
 import com.google.vr.sdk.base.AndroidCompat;
-import com.google.vr.sdk.base.Eye;
 
 public class Activity_Mono360 extends AppCompatActivity {
     private GLSurfaceViewEGL14 mGLView14Mono360;
@@ -47,7 +46,7 @@ public class Activity_Mono360 extends AppCompatActivity {
     private HomeLocation mHomeLocation;
 
     //We mustn't call onPause/onResume on the Gvr layout, or else the surface might be destroyed/app will crash. TODO: track this issue to it's roots
-    private final boolean useGVRLayout=true;
+    private final boolean useGVRLayout=false;
 
     private void enableSustainedPerformanceIfPossible(){
         if (Build.VERSION.SDK_INT >= 24) {
@@ -111,6 +110,7 @@ public class Activity_Mono360 extends AppCompatActivity {
             setContentView(mGLView14Mono360);
         }
         mHomeLocation=new HomeLocation(this,mGLRenderer14Mono360);
+        registerForContextMenu(mGLView14Mono360);
     }
 
     @Override
@@ -162,5 +162,26 @@ public class Activity_Mono360 extends AppCompatActivity {
         mGvrLayout=null;
         mGLView14Mono360=null;
         mGLRenderer14Mono360=null;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.setHeaderTitle("Options");
+        getMenuInflater().inflate(R.menu.video_context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.option_set_home:
+		mGLRenderer14Mono360.setHomeOrientation();
+                return true;
+            case R.id.option_goto_home:
+		mGLRenderer14Mono360.goToHomeOrientation();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 }
