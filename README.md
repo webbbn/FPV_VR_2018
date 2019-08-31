@@ -13,7 +13,11 @@ Added initial support for display of 360 degree video from the Insta360 Air USB 
 
 The video must be 2560x1280, and can be streamed using the following ffmpeg command:
 
-`ffmpeg -r 30 -copytb 0 -f v4l2 -vcodec h264 -s 2560x1280 -i /dev/video0 -vcodec copy -f h264 udp://<host>:5000`
+`ffmpeg -r 30 -copytb 0 -f v4l2 -vcodec h264 -s 2560x1280 -i /dev/video0 -vcodec copy -f h264 udp://<host>:5600`
+
+# 2019/08/31 - Adds an additional video transport using ffmpeg/libav
+
+This release adds an additional option under Network configuration for specifying a URL. Any URL present will override the UDP video stream. Libav will open the URL and try playing a video stream from there. This is just used for transport and extracting the encoded frames from the streams, so it should not add any significant additional latency, although that has not been tested.
 
 Known issues:
 
