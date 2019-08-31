@@ -17,7 +17,38 @@ set_target_properties( # Specifies the target library.
                        # Provides the path to the library you want to import.
                        ${GVR_DIR}/${ANDROID_ABI}/libgvr.so )
 include_directories(${GVR_DIR})
+
 ###########################################################################################
+set(FFMPEG_DIR ${CMAKE_SOURCE_DIR}/libs/ffmpeg)
+
+add_library( avcodec-lib
+             SHARED
+             IMPORTED )
+add_library( avformat-lib
+             SHARED
+             IMPORTED )
+add_library( avutil-lib
+             SHARED
+             IMPORTED )
+set_target_properties( # Specifies the target library.
+                       avcodec-lib
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
+                       # Provides the path to the library you want to import.
+                       ${FFMPEG_DIR}/${ANDROID_ABI}/libavcodec.so)
+set_target_properties( # Specifies the target library.
+                       avformat-lib
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
+                       # Provides the path to the library you want to import.
+                       ${FFMPEG_DIR}/${ANDROID_ABI}/libavformat.so)
+set_target_properties( # Specifies the target library.
+                       avutil-lib
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
+                       # Provides the path to the library you want to import.
+                       ${FFMPEG_DIR}/${ANDROID_ABI}/libavutil.so)
+include_directories(${FFMPEG_DIR}/include)
 
 include_directories(src/main/cpp/glm)
 include_directories(src/main/cpp/GLPrograms)
@@ -151,9 +182,14 @@ target_link_libraries( GLRenderSphere
 add_library( UDPReceiver
              SHARED
              src/main/cpp/Network/UDPReceiver.cpp )
+#add_library( fec
+#             SHARED
+#             src/main/cpp/Network/fec.c
+#	     src/main/cpp/Network/fec.cc )
 target_link_libraries(UDPReceiver
                       ${log-lib}
                       android
+#		      fec
                       log)
 ##########################################################################################################
 #Telemetry
@@ -286,11 +322,16 @@ target_link_libraries(VideoRenderer
                        GLESv2)
 add_library( VideoPlayerN
              SHARED
-             src/main/cpp/Video/VideoPlayerN.cpp )
+             src/main/cpp/Video/VideoPlayerN.cpp
+	     src/main/cpp/Video/FFMpegVideoPlayer.cpp )
 target_link_libraries(VideoPlayerN
                       LowLagDecoder
                       UDPReceiver
                       TelemetryReceiver
+                      #FFMpegVideoPlayer
+                      avcodec-lib
+		      avformat-lib
+		      avutil-lib
                       ${log-lib}
                       android
                       log)

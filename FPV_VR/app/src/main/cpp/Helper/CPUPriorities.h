@@ -54,7 +54,7 @@ constexpr int CPU_PRIORITY_UDPRECEIVER_TELEMETRY=-2;
 constexpr int CPU_PRIORITY_TEXTELEMENTS_GLREFRESH=0;
 
 
-static const void setCPUPriority(const int priority,const string caller){
+static const void setCPUPriority(const int priority,const std::string caller){
     int which = PRIO_PROCESS;
     auto pid = getpid();
     int ret = setpriority(which, pid, priority);
@@ -65,7 +65,7 @@ static const void setCPUPriority(const int priority,const string caller){
     ret = getpriority(which, pid);
     LOGVCPUPrio("Priority set to %d in %s",ret,caller.c_str());
 }
-static const void printCPUPriority(const string caller){
+static const void printCPUPriority(const std::string caller){
     int which = PRIO_PROCESS;
     auto pid = getpid();
     pid = getpid();

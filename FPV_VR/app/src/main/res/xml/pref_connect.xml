@@ -29,6 +29,11 @@
             android:summary="UDP Port to receive raw h.264 NALUS (video stream)"
             android:inputType="numberSigned"
             android:defaultValue="5600" />
+	<EditTextPreference
+            android:key="@string/VideoURL"
+            android:title="@string/VideoURL"
+            android:summary="URL for receiving video streams (overrides UDP stream)"
+            android:defaultValue="" />
     </PreferenceCategory>
     <PreferenceCategory
         android:title="Telemetry stream(s)">

@@ -38,7 +38,7 @@ public class VideoPlayer {
     private native void waitAndDelete();
     private native void passNALUDataToNative(byte[] b,int l);
 
-    private native void createUDPReceiver(int port);
+    private native void createUDPReceiver(int port,String url);
     private native void startReceiving();
     private native void stopReceiving();
 
@@ -86,11 +86,11 @@ public class VideoPlayer {
         synchronized (lock){
             switch (mConnectionType){
                 case Settings.ConnectionTypeEZWB:
-                    createUDPReceiver(Settings.UDPPortVideo);
+                    createUDPReceiver(Settings.UDPPortVideo,Settings.VideoURL);
                     startReceiving();
                     break;
                  case Settings.ConnectionTypeManually:
-                    createUDPReceiver(Settings.UDPPortVideo);
+                    createUDPReceiver(Settings.UDPPortVideo,Settings.VideoURL);
                     startReceiving();
                     break;
                 case Settings.ConnectionTypeTestFile:

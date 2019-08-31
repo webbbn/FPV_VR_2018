@@ -8,11 +8,13 @@
 #include <LowLagDecoder.h>
 #include <UDPReceiver.h>
 #include <TelemetryReceiver.h>
+#include "FFMpegVideoPlayer.h"
 #include "../Helper/CPUPriorities.h"
 #include "../SettingsN.h"
 
 LowLagDecoder *mLowLagDecoder=NULL;
 UDPReceiver *mVideoReceiver;
+FFMpegVideoPlayer *mVideoPlayer;
 
 //float W=1280,H=720;
 float W=2560,H=1280;
@@ -20,6 +22,7 @@ float W=2560,H=1280;
 jobject globalJavaObj;
 jclass globalVideoPlayerInstanceClassJAVA;
 JavaVM* mJavaVirtualMachine;
+
 
 void onDataReceivedCallback(uint8_t data[],int data_length){
     if(mLowLagDecoder!=NULL) {
@@ -74,6 +77,7 @@ JNIEXPORT void JNICALL Java_constantin_fpv_1vr_VideoPlayer_createDecoder(
 //Does return immediately
 JNIEXPORT void JNICALL Java_constantin_fpv_1vr_VideoPlayer_shutdownDecoder(
         JNIEnv * env, jobject obj) {
+    LOGV("shutdown");
     mLowLagDecoder->shutdown();
     delete(mLowLagDecoder);
     mLowLagDecoder=NULL;
@@ -83,11 +87,14 @@ JNIEXPORT void JNICALL Java_constantin_fpv_1vr_VideoPlayer_shutdownDecoder(
 
 JNIEXPORT void JNICALL Java_constantin_fpv_1vr_VideoPlayer_requestShutdown(
         JNIEnv * env, jobject obj) {
+    LOGV("Shutdown");
     mLowLagDecoder->requestShutdown();
+    mVideoPlayer->stop_playing();
 }
 
 JNIEXPORT void JNICALL Java_constantin_fpv_1vr_VideoPlayer_waitAndDelete(
         JNIEnv * env, jobject obj) {
+    LOGV("Wait");
     mLowLagDecoder->waitForShutdownAndDelete();
     delete(mLowLagDecoder);
     mLowLagDecoder=NULL;
@@ -105,18 +112,40 @@ JNIEXPORT void JNICALL Java_constantin_fpv_1vr_VideoPlayer_passNALUDataToNative(
     env->ReleaseByteArrayElements(b,arrayP,0);
 }
 
-
 JNIEXPORT void JNICALL Java_constantin_fpv_1vr_VideoPlayer_createUDPReceiver(
-        JNIEnv * env, jobject obj,jint port) {
-    mVideoReceiver=new UDPReceiver((int)port,UDPReceiver::MODE_BLOCKING,"VideoPlayerN VideoReceiver",CPU_PRIORITY_UDPRECEIVER_VIDEO,10240,onDataReceivedCallback);
+        JNIEnv * env, jobject obj,jint port,jstring jurl) {
+
+    // Convert the URL string from java
+    const char *cstr = env->GetStringUTFChars(jurl, NULL);
+    std::string url = std::string(cstr);
+    env->ReleaseStringUTFChars(jurl, cstr);
+
+    // Create the FFMpegDecoder if necessary, otherwise the UDP receiver
+    if (!url.empty()) {
+        mVideoPlayer=new FFMpegVideoPlayer(url,CPU_PRIORITY_UDPRECEIVER_VIDEO,onDataReceivedCallback);
+    } else {
+        mVideoReceiver=new UDPReceiver((int)port,UDPReceiver::MODE_BLOCKING,"VideoPlayerN VideoReceiver",CPU_PRIORITY_UDPRECEIVER_VIDEO,10240,onDataReceivedCallback);
+    }
 }
 JNIEXPORT void JNICALL Java_constantin_fpv_1vr_VideoPlayer_startReceiving(
         JNIEnv * env, jobject obj) {
-    mVideoReceiver->startReceiving();
+    LOGV("Start");
+    if (mVideoReceiver) {
+        mVideoReceiver->startReceiving();
+    }
+    if (mVideoPlayer) {
+        mVideoPlayer->start_playing();
+    }
 }
 JNIEXPORT void JNICALL Java_constantin_fpv_1vr_VideoPlayer_stopReceiving(
         JNIEnv * env, jobject obj) {
-    mVideoReceiver->stopReceiving();
+    LOGV("Stop");
+    if (mVideoReceiver) {
+        mVideoReceiver->stopReceiving();
+    }
+    if (mVideoPlayer) {
+        mVideoPlayer->stop_playing();
+    }
 }
 
 }

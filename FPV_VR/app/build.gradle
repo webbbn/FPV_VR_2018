@@ -38,7 +38,7 @@ android {
         main {
             res.srcDirs = ['src/main/res']
             //jniLibs.srcDirs = ['libs/qcom/symphony']
-            jniLibs.srcDirs = ['libs/google/gvr']
+            jniLibs.srcDirs = ['libs/google/gvr', 'libs/ffmpeg']
         }
     }
 }

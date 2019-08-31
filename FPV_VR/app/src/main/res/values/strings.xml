@@ -15,6 +15,7 @@
 
     //Network settings
     <string name="UDPVideoPort">UDPVideoPort</string>
+    <string name="VideoURL">VideoURL</string>
 
     //VR
     <string name="VRHeadsetType">VRHeadsetType</string>

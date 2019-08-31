@@ -36,6 +36,7 @@ public class Settings {
     public static final int ConnectionTypeStorageFile=3;
     public static int ConnectionType = ConnectionTypeTestFile;
     public static int UDPPortVideo=5600;
+    public static String VideoURL;
     public static String FilenameVideo="video.h264";
 
     //Performance "Hacks"
@@ -101,6 +102,7 @@ public class Settings {
         try{
             UDPPortVideo=Integer.parseInt(pref_connect.getString(context.getString(R.string.UDPVideoPort),"5600"));
         }catch (Exception e){e.printStackTrace();UDPPortVideo=5600;}
+        VideoURL=pref_connect.getString(context.getString(R.string.VideoURL),"");
         FilenameVideo=pref_connect.getString(context.getString(R.string.GroundRecFileName),"video.h264");
 
         //DistortionCorrection
